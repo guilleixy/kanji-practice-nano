@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { sampleSize, sample } from 'lodash';
 import { Toaster, toast } from 'sonner'
+import {Checkbox} from "@nextui-org/checkbox";
 
 interface Kanji {
   key: number;
@@ -42,10 +43,10 @@ export default function Home() {
 
   const checkAnswer = (option: Kanji) => {
     if (option.key === randomKanji?.key) {
-      toast.success(option.kanji +  ' es correcto!');
+      toast.success(option.kanji + ' は "' + option.translation + '" です!');
       generateOptions( allKanji );
     } else {
-      toast.error(option.kanji +  ' es incorrecto!');
+      toast.error(option.kanji + ' は "' + option.translation + '" ではありません!');
     }
   };
 
@@ -55,22 +56,19 @@ export default function Home() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <Toaster richColors/>
-      <p className='text-8xl border-white border-solid rounded-md border-2 p-11'>{randomKanji?.kanji}</p>
-      <div>
-        <label>
-          <input type="checkbox" checked={onyomiChecked} onChange={() => setOnyomiChecked(!onyomiChecked)} />
+      <div className='flex flex-wrap justify-center absolute top-3'>
+        <Checkbox className='mx-3' size='md' isSelected={onyomiChecked} checked={onyomiChecked} onChange={() => setOnyomiChecked(!onyomiChecked)}>
           おんよみ
-        </label>
-        <label>
-          <input type="checkbox" checked={kunyomiChecked} onChange={() => setKunyomiChecked(!kunyomiChecked)} />
-          くんよみ 
-        </label>
-        <label>
-          <input type="checkbox" checked={translationChecked} onChange={() => setTranslationChecked(!translationChecked)} />
+        </Checkbox>
+        <Checkbox className='mx-3' size='md' isSelected={kunyomiChecked} checked={kunyomiChecked} onChange={() => setKunyomiChecked(!kunyomiChecked)}>
+          くんよみ
+        </Checkbox>
+        <Checkbox className='mx-3' size='md' isSelected={translationChecked} checked={translationChecked} onChange={() => setTranslationChecked(!translationChecked)}>
           いみ
-        </label>
+        </Checkbox>
       </div>
+      <Toaster richColors/>
+      <p className='text-8xl border-white border-solid rounded-md border-2 p-11 mb-5'>{randomKanji?.kanji}</p>
       <div className='flex flex-wrap justify-center'>
         {options.map((option, index) => (
           <button className='border-white border-solid rounded-md border-2 p-4 m-2' key={index} onClick={() => checkAnswer(option)}>

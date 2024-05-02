@@ -45,10 +45,10 @@ export default function Home() {
 
   const checkAnswer = (option: Kanji) => {
     if (option.key === randomKanji?.key) {
-      toast.success(option.kanji + ' は "' + randomKanji.translation + '" です!');
+      toast.success(!order ? `${option.translation} は "${randomKanji.kanji}" です!` : `${option.kanji} は "${randomKanji.translation}" です!`);
       generateOptions( allKanji );
     } else {
-      toast.error(option.kanji + ' は "' + randomKanji?.translation + '" ではありません!');
+      toast.error(!order ? `${option.translation} は "${randomKanji?.kanji}" ではありません!` : `${option.kanji} は "${randomKanji?.translation}" ではありません!`);
     }
   };
 

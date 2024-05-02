@@ -61,7 +61,7 @@ export default function Home() {
         {/* <Switch color='success' className='text-center' isSelected={order} onValueChange={setOrder}>
           Kanji - Traducción / Traducción - Kanji
         </Switch> */}
-        <div className='absolute bottom-12 flex justify-center items-center'>
+        <div className='absolute bottom-14 flex justify-center items-center'>
           <span className='mx-2 text-center'>Kanji - Traducción</span>
           <label className="switch">
             <input type="checkbox" onChange={() => setOrder(!order)}/>

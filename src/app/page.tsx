@@ -22,7 +22,14 @@ export default function Home() {
   const [translationChecked, setTranslationChecked] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [order, setOrder] = useState(false);
-
+  const [streak, setStreak] = useState(0);
+  const [highestStreak, setHighestStreak] = useState(() => {
+    const savedStreak = localStorage.getItem('highestStreak');
+    return savedStreak !== null ? JSON.parse(savedStreak) : 0;
+  });
+  useEffect(() => {
+    localStorage.setItem('highestStreak', JSON.stringify(highestStreak));
+  }, [highestStreak]);
   useEffect(() => {
     fetch('kanjis.json') // Replace with the actual path to kanjis.json
       .then(response => response.json())
@@ -46,11 +53,37 @@ export default function Home() {
   const checkAnswer = (option: Kanji) => {
     if (option.key === randomKanji?.key) {
       toast.success(!order ? `${option.translation} は "${randomKanji.kanji}" です!` : `${option.kanji} は "${randomKanji.translation}" です!`);
-      generateOptions( allKanji );
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      if (newStreak > highestStreak) {
+        setHighestStreak(newStreak);
+      }
+      generateOptions(allKanji);
     } else {
       toast.error(!order ? `${option.translation} は "${randomKanji?.kanji}" ではありません!` : `${option.kanji} は "${randomKanji?.translation}" ではありません!`);
+      setStreak(0);
     }
   };
+
+  const getEmojiForStreak = (streak: number): string => {
+    if (streak >= 25) {
+        return '🔥'; 
+    } else if (streak >= 20) {
+        return '😆'; 
+    } else if (streak >= 15){
+      return '😄'; 
+    } else if (streak >= 10){
+      return '😀'; 
+    } else if (streak >= 5){
+      return '🙂'; 
+    } else if (streak >= 3){
+      return '😌'; 
+    } else if (streak > 0) {
+        return '😯'; 
+    } else {
+        return '😶';
+    }
+};
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -61,13 +94,18 @@ export default function Home() {
         {/* <Switch color='success' className='text-center' isSelected={order} onValueChange={setOrder}>
           Kanji - Traducción / Traducción - Kanji
         </Switch> */}
-        <div className='absolute bottom-14 flex justify-center items-center'>
-          <span className='mx-2 text-center'>Kanji - Traducción</span>
-          <label className="switch">
-            <input type="checkbox" onChange={() => setOrder(!order)}/>
-            <span className="slider"></span>
-          </label>   
-          <span className='mx-2 text-center'>Traducción - Kanji</span>       
+        <div className='absolute bottom-14 flex justify-center items-center flex-col gap-2'>
+          <div className='flex justify-center items-center'>
+            <span className='mx-2 text-center'>Kanji - Traducción</span>
+            <label className="switch">
+              <input type="checkbox" onChange={() => setOrder(!order)}/>
+              <span className="slider"></span>
+            </label>   
+            <span className='mx-2 text-center'>Traducción - Kanji</span>  
+          </div>
+          <div>
+            スコア: {streak} {getEmojiForStreak(streak)} 最高スコア: {highestStreak} ⭐
+          </div>     
         </div>
 
         <div className='flex flex-wrap justify-center top-3 absolute'>

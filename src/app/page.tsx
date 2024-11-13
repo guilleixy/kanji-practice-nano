@@ -23,13 +23,23 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [order, setOrder] = useState(false);
   const [streak, setStreak] = useState(0);
-  const [highestStreak, setHighestStreak] = useState(() => {
-    const savedStreak = localStorage.getItem('highestStreak');
-    return savedStreak !== null ? JSON.parse(savedStreak) : 0;
-  });
+  const [highestStreak, setHighestStreak] = useState(0);
+
   useEffect(() => {
-    localStorage.setItem('highestStreak', JSON.stringify(highestStreak));
+    if (typeof window !== 'undefined') {
+      const savedStreak = localStorage.getItem('highestStreak');
+      if (savedStreak !== null) {
+        setHighestStreak(JSON.parse(savedStreak));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('highestStreak', JSON.stringify(highestStreak));
+    }
   }, [highestStreak]);
+
   useEffect(() => {
     fetch('kanjis.json') // Replace with the actual path to kanjis.json
       .then(response => response.json())
@@ -83,7 +93,7 @@ export default function Home() {
     } else {
         return '😶';
     }
-};
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -91,9 +101,6 @@ export default function Home() {
 
   return (
     <div className='relative' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        {/* <Switch color='success' className='text-center' isSelected={order} onValueChange={setOrder}>
-          Kanji - Traducción / Traducción - Kanji
-        </Switch> */}
         <div className='absolute bottom-14 flex justify-center items-center flex-col gap-2'>
           <div className='flex justify-center items-center'>
             <span className='mx-2 text-center'>Kanji - Traducción</span>
